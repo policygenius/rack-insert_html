@@ -56,5 +56,17 @@ describe Rack::InsertHtml do
       end
     end
   end
+
+  context 'when it is not an html response' do
+    let(:inner_app) do
+      proc { |env| [ 200, { 'Content-Type' => 'text/plain', 'Content-Length' => '11' }, ["Hello world"] ] }
+    end
+    let(:stack) { Rack::InsertHtml.new(inner_app, { content: 'insert_this_content', insertion_point: 'world' }) }
+
+    it 'does not insert the content' do
+      response = request.get '/'
+      expect(response.body).to eq 'Hello world'
+    end
+  end
 end
 

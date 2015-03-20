@@ -12,14 +12,16 @@ module Rack
       response = @app.call(env)
       status, headers, body = response
 
-      # find the last matching insertion point in the body and insert the content
-      pre, match, post = body.first.rpartition(@options[:insertion_point])
-      body = "#{pre}#{@options[:content]}#{match}#{post}"
+      if headers['Content-Type'] == 'text/html'
+        # find the last matching insertion point in the body and insert the content
+        pre, match, post = body.first.rpartition(@options[:insertion_point])
+        body = ["#{pre}#{@options[:content]}#{match}#{post}"]
 
-      # Update the content-length
-      headers['Content-Length'] = body.bytesize.to_s
+        # Update the content-length
+        headers['Content-Length'] = body.first.bytesize.to_s
+      end
 
-      [status, headers, [body]]
+      [status, headers, body]
     end
   end
 end
