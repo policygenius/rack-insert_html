@@ -10,7 +10,7 @@ describe Rack::InsertHtml do
       [
         200, 
         { 
-          'Content-Type' => 'text/html', 
+          'Content-Type' => 'text/html; charset=utf-8', 
           'Content-Length' => example_html.bytesize 
         }, 
         [example_html]
